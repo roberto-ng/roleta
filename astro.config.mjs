@@ -9,5 +9,7 @@ export default defineConfig({
   integrations: [preact({
     compat: true
   })],
-  adapter: netlify()
+  adapter: netlify({
+    dist: new URL('./dist/', import.meta.url)
+  })
 });
