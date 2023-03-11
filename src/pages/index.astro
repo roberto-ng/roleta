@@ -26,9 +26,13 @@ const sorteios = await prisma.sorteioGrupoTeste.findMany();
 				Entrar
 			</SignIn>
 		) : (
-			<SignOut>
-				Sair
-			</SignOut>
+			<>
+				<p>Usuário: {session.user.name}</p>
+
+				<SignOut>
+					Sair
+				</SignOut>
+			</>
 		)}
 	</main>
 </Layout>
