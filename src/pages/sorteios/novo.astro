@@ -1,0 +1,47 @@
+---
+import { PrismaClient, SorteioGrupoTeste } from "@prisma/client";
+import { zfd } from "zod-form-data";
+import Layout from "../../layouts/Layout.astro";
+
+const schema = zfd.formData({
+    nome: zfd.text(),
+});
+
+let mensagemErro: string | null = null;
+
+if (Astro.request.method === "POST") {
+    try {
+        const formData = await Astro.request.formData();
+        const data = schema.parse(formData);
+
+        // criar sorteio
+        const prisma = new PrismaClient();
+        await prisma.sorteioGrupoTeste.create({
+            data: {
+                nome: data.nome,
+            },
+        });
+
+        return Astro.redirect("/");
+    } catch (error) {
+        mensagemErro = 'Erro ao criar sorteio, tente novamente';
+        
+        if (error instanceof Error) {
+            console.error(error.message);
+        }
+    }
+}
+---
+
+<Layout title="Criar sorteio">
+    <p>Criar sorteio</p>
+
+    <form action="/sorteios/novo" method="post">
+        <div>
+            <label>Nome do grupo:</label>
+            <input type="text" name="nome" minlength="4" required />
+        </div>
+
+        <button type="submit"> Criar</button>
+    </form>
+</Layout>
