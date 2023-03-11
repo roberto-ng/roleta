@@ -12,8 +12,10 @@
   "dependencies": {
     "@astrojs/netlify": "^2.2.0",
     "@astrojs/preact": "^2.1.0",
+    "@auth/core": "^0.5.1",
     "@prisma/client": "^4.11.0",
     "astro": "^2.1.2",
+    "auth-astro": "^1.0.5",
     "preact": "^10.6.5",
     "zod": "^3.21.4",
     "zod-form-data": "^2.0.0"
