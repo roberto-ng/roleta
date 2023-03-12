@@ -18,6 +18,8 @@ model Sorteio {
   nomes     String?
   numeroMin Int?
   numeroMax Int?
+  resultado String?
+  data      String?
 }
 
 model SorteioGrupoTeste {

@@ -3,17 +3,19 @@ const sorteioTipos = [
 	{
 		nome: "Sorteio de números",
 		descricao: "Sorteio de números que permite que o organizador escolha uma quantidade entre um intervalo de números para sortear!",
+		href: "/sorteios/novo_numeros",
 	},
 	{
 		nome: "Sorteio de nomes",
 		descricao: "Preencha uma lista de nomes e escolha a quantidade de nomes que deverão ser sorteados desta lista!",
+		href: "/",
 	},
 ] as const;
 ---
 
 <div class="sorteio-tipos">
     {sorteioTipos.map((tipo) => (
-        <a href="/">
+        <a href={tipo.href}>
             <div class="sorteio-tipo">
                 <h2>{tipo.nome}</h2>
 
