@@ -4,7 +4,6 @@ import { SignIn, SignOut } from "auth-astro/components";
 import { PrismaClient } from "@prisma/client";
 import { authOpts } from "./api/auth/[...astroauth]";
 import Layout from "../layouts/Layout.astro";
-import Navbar from "../components/Navbar.astro";
 
 const session = await getSession(Astro.request, authOpts);
 
