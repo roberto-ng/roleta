@@ -1,13 +1,17 @@
 ---
 import { PrismaClient, SorteioGrupoTeste } from "@prisma/client";
+import { getSession } from "auth-astro";
 import { zfd } from "zod-form-data";
 import Layout from "../../layouts/Layout.astro";
+import { authOpts } from "../api/auth/[...astroauth]";
 
 const schema = zfd.formData({
     nome: zfd.text(),
 });
 
 let mensagemErro: string | null = null;
+
+const session = await getSession(Astro.request, authOpts);
 
 if (Astro.request.method === "POST") {
     try {
@@ -33,7 +37,7 @@ if (Astro.request.method === "POST") {
 }
 ---
 
-<Layout title="Criar sorteio">
+<Layout pageTitle="Criar sorteio" session={session}>
     <p>Criar sorteio</p>
 
     <form action="/sorteios/novo" method="post">

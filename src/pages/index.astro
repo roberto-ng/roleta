@@ -12,23 +12,12 @@ const prisma = new PrismaClient();
 const sorteios = await prisma.sorteioGrupoTeste.findMany();
 ---
 
-<Layout title="Roleta">
-	<Navbar session={session} />
+<Layout pageTitle="Roleta" session={session}>
+	<a href="/sorteios/novo">Criar Sorteio</a>
 
-	<main>
-		<a href="/sorteios/novo">Criar Sorteio</a>
+	<p>Sorteios: {sorteios.length}</p>
 
-		<p>Sorteios: {sorteios.length}</p>
-
-		<ul>
-			{sorteios.map((sorteio) => <li>{sorteio.nome}</li>)}
-		</ul>
-	</main>
+	<ul>
+		{sorteios.map((sorteio) => <li>{sorteio.nome}</li>)}
+	</ul>
 </Layout>
-
-<style>
-	main {
-		padding-top: 30px;
-		padding-left: 15px;
-	}
-</style>
