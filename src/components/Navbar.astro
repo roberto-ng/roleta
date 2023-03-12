@@ -15,21 +15,19 @@ const estaLogado = session?.user != null;
     <a class="title" href="/">SORTE NORTE</a>
 
     <div>
-        {
-            estaLogado ? (
-                <div class="usuario">
-                    <p>{session.user?.email}</p>
+        {(estaLogado) ? (
+            <div class="usuario">
+                <p>{session.user?.name}</p>
 
-                    <SignOut>Sair</SignOut>
-                </div>
-            ) : (
-                <div class="usuario">
-                    <a class="entrar" href="/login">
-                        Entrar
-                    </a>
-                </div>
-            )
-        }
+                <SignOut>Sair</SignOut>
+            </div>
+        ) : (
+            <div class="usuario">
+                <a class="entrar" href="/login">
+                    Entrar
+                </a>
+            </div>
+        )}
     </div>
 </div>
 

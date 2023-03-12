@@ -8,7 +8,7 @@ const session = await getSession(Astro.request, authOpts);
 
 if (session?.user != null) {
     // usuário já está logado
-    return Astro.redirect('/');
+    return Astro.redirect('/home');
 }
 ---
 

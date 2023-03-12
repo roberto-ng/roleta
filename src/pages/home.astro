@@ -1,0 +1,78 @@
+---
+import { getSession } from "auth-astro";
+import Layout from "../layouts/Layout.astro";
+import { authOpts } from "./api/auth/[...astroauth]";
+import TiposDeSorteio from "../components/TiposDeSorteio.astro";
+import { PrismaClient } from "@prisma/client";
+import { DateTime } from "luxon";
+
+const session = await getSession(Astro.request, authOpts);
+if (session?.user?.email == null) {
+    return Astro.redirect('/login');
+}
+
+// buscar todos os sorteios desse usuário
+const prisma = new PrismaClient();
+const sorteios = await prisma.sorteio.findMany({
+    where: { userEmail: session.user.email }
+});
+---
+
+<Layout session={session}>
+	<TiposDeSorteio />
+
+    <h2>Meus sorteios:</h2>
+    <div class="sorteios">
+        {sorteios.map((sorteio) => {
+            const data = DateTime
+                .fromISO(sorteio.data!)
+                .setLocale('pt-br')
+                .toLocaleString(DateTime.DATETIME_SHORT);
+
+            const resultados = sorteio.resultado
+                ?.split(' ')
+                .join(', ');
+
+            return (
+                <div class="sorteio">
+                    <h3>Sorteio de número em {data}</h3>
+    
+                    <p>
+                        Número(s) sorteados: {resultados ?? 'nenhum'}
+                    </p>
+    
+                    <a href={`/sorteios/${sorteio.id}`}>
+                        Ver detalhes
+                    </a>
+                </div>
+            );
+        })}
+    </div>
+</Layout>
+
+<style>
+    .sorteios {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .sorteio {
+        display: flex;
+        flex-direction: column;
+
+        border-bottom: 1px solid dimgray;
+    }
+    
+    .sorteio:not(:first) {
+        border-top: 1px solid dimgray;
+    }
+
+    .sorteio p, .sorteio h3 {
+        margin: 5px;
+    }
+
+    .sorteio a {
+        color: dodgerblue;
+        margin: 5px;
+    }
+</style>

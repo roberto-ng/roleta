@@ -6,6 +6,9 @@ import Layout from "../layouts/Layout.astro";
 import TiposDeSorteio from "../components/TiposDeSorteio.astro";
 
 const session = await getSession(Astro.request, authOpts);
+if (session?.user != null) {
+	return Astro.redirect('/home')
+}
 ---
 
 <Layout session={session}>
