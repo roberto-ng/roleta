@@ -3,7 +3,7 @@ import type { Session } from '@auth/core/types';
 import Navbar from '../components/Navbar.astro';
 
 export interface Props {
-	pageTitle: string;
+	pageTitle?: string;
 	session: Session | null;
 }
 

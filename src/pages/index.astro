@@ -8,6 +8,6 @@ import TiposDeSorteio from "../components/TiposDeSorteio.astro";
 const session = await getSession(Astro.request, authOpts);
 ---
 
-<Layout pageTitle="Roleta" session={session}>
+<Layout session={session}>
 	<TiposDeSorteio />
 </Layout>

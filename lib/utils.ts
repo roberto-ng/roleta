@@ -11,7 +11,6 @@ export const gerarNumerosAleatorios = trampoline((
 ): ThunkOrValue<Set<number>> => {
     // gerar número aleatório
     const resultado = randomInt(min, max);
-    console.log('resultado', resultado);
 
     if (encontrados.has(resultado)) {
         // veio um número repetido, buscar outro

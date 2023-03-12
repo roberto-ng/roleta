@@ -33,11 +33,10 @@ if (Astro.request.method === "POST") {
         const quantidade = data.quantidade ?? 1;
         const resultados = gerarNumerosAleatorios(min, max, quantidade);
         const resultadoString = resultados.join(' ');
-        console.log('resultados', resultadoString)
 
-        // criar sorteio
+        // salvar sorteio
         const prisma = new PrismaClient();
-        await prisma.sorteio.create({
+        const { id } = await prisma.sorteio.create({
             data: {
                 tipo: 'numero',
                 userEmail: session.user.email!,
@@ -48,7 +47,7 @@ if (Astro.request.method === "POST") {
             },
         });
 
-        return Astro.redirect('/');
+        return Astro.redirect(`/sorteios/${id}`);
     } catch (err) {
         console.error(err);
     }

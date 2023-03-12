@@ -1,0 +1,91 @@
+---
+import { PrismaClient } from "@prisma/client";
+import { getSession } from "auth-astro";
+import { DateTime } from "luxon";
+import Layout from "../../layouts/Layout.astro";
+import { authOpts } from "../api/auth/[...astroauth]";
+
+const { id } = Astro.params;
+
+const session = await getSession(Astro.request, authOpts);
+if (session?.user == null) {
+    return Astro.redirect('/login');
+}
+
+const prisma = new PrismaClient();
+const sorteio = await prisma.sorteio.findFirst({
+    where: { id },
+});
+
+if (sorteio == null) {
+    return Astro.redirect('/');
+}
+
+const data = DateTime.fromISO(sorteio.data!);
+const dataString = data
+    .setLocale('pt-BR')
+    .toLocaleString(DateTime.DATETIME_SHORT);
+
+const resultados = sorteio.resultado?.split(' ') ?? [];
+
+const title = (session?.user?.name == null) 
+    ? 'Sorteio'
+    : `Sorteio de ${session?.user?.name} em ${dataString}`;
+---
+
+<Layout pageTitle={title} session={session}>
+    <h1 class="titulo">{title}</h1>
+
+    <p class="texto">
+        {resultados.length} número(s) sorteados entre {sorteio.numeroMin} e {sorteio.numeroMax}
+    </p>
+
+    <h2 class="subtitulo">
+        Resultados:
+    </h2>
+
+    <div class="resultados">
+        {resultados.map(valor => (
+            <div class="circulo">
+                <h2>{valor}</h2>
+            </div>
+        ))}
+    </div>
+</Layout>
+
+<style>
+    .texto {
+        font-size: 22px;
+        text-align: center;
+    }
+
+    .titulo {
+        text-align: center;
+    }
+
+    .subtitulo {
+        text-align: center;
+    }
+
+    .resultados {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .circulo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        color: orange;
+        border: 2px solid orange;
+        border-radius: 50%;
+        padding: 10px;
+        height: 30px;
+        width: 30px;
+
+
+        user-select: none;
+    }
+</style>
