@@ -2,13 +2,22 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
-  binaryTargets = ["native"] 
+  provider      = "prisma-client-js"
+  binaryTargets = ["native"]
 }
 
 datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
+}
+
+model Sorteio {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  userEmail String
+  tipo      String
+  nomes     String?
+  numeroMin Int?
+  numeroMax Int?
 }
 
 model SorteioGrupoTeste {
