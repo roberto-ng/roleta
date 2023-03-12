@@ -1,0 +1,46 @@
+---
+import { getSession } from "auth-astro";
+import { SignIn } from "auth-astro/components";
+import Layout from "../layouts/Layout.astro";
+import { authOpts } from "./api/auth/[...astroauth]";
+
+const session = await getSession(Astro.request, authOpts);
+
+if (session?.user != null) {
+    // usuário já está logado
+    return Astro.redirect('/');
+}
+---
+
+<Layout pageTitle="Entrar" session={session}>
+    <div class="container">
+        <h1>Entrar:</h1>
+
+        <SignIn class="github" provider="github">Entrar com GitHub</SignIn>
+    </div>
+</Layout>
+
+<style>
+    main {
+        height: 100vh;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        width: 100vw;
+        height: calc(100vh - 100px);
+    }
+
+    .github {
+        border: none;
+        background-color: black;
+        color: white;
+        border-radius: 20px;
+        padding: 10px 20px;
+        cursor: pointer;
+    }
+</style>

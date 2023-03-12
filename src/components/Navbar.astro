@@ -24,7 +24,9 @@ const estaLogado = session?.user != null;
                 </div>
             ) : (
                 <div class="usuario">
-                    <SignIn provider="github">Entrar</SignIn>
+                    <a class="entrar" href="/login">
+                        Entrar
+                    </a>
                 </div>
             )
         }
@@ -64,5 +66,9 @@ const estaLogado = session?.user != null;
     .usuario p {
         margin: 0;
         padding: 0;
+    }
+
+    .entrar {
+        color: dodgerblue;
     }
 </style>
