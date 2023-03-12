@@ -1,9 +1,10 @@
 ---
+import { getSession } from "auth-astro";
 import { SignIn, SignOut } from "auth-astro/components";
 import { PrismaClient } from "@prisma/client";
 import { authOpts } from "./api/auth/[...astroauth]";
 import Layout from "../layouts/Layout.astro";
-import { getSession } from "auth-astro";
+import Navbar from "../components/Navbar.astro";
 
 const session = await getSession(Astro.request, authOpts);
 
@@ -12,6 +13,8 @@ const sorteios = await prisma.sorteioGrupoTeste.findMany();
 ---
 
 <Layout title="Roleta">
+	<Navbar session={session} />
+
 	<main>
 		<a href="/sorteios/novo">Criar Sorteio</a>
 
@@ -20,19 +23,12 @@ const sorteios = await prisma.sorteioGrupoTeste.findMany();
 		<ul>
 			{sorteios.map((sorteio) => <li>{sorteio.nome}</li>)}
 		</ul>
-
-		{(session?.user == null) ? (
-			<SignIn provider="github">
-				Entrar
-			</SignIn>
-		) : (
-			<>
-				<p>Usuário: {session.user.name}</p>
-
-				<SignOut>
-					Sair
-				</SignOut>
-			</>
-		)}
 	</main>
 </Layout>
+
+<style>
+	main {
+		padding-top: 30px;
+		padding-left: 15px;
+	}
+</style>

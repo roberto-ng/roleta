@@ -1,0 +1,66 @@
+---
+import type { Session } from "@auth/core/types";
+import { SignIn, SignOut } from "auth-astro/components";
+
+export type Props = {
+    session: Session | null;
+};
+
+const { session } = Astro.props;
+
+const estaLogado = session?.user != null;
+---
+
+<div class="navbar">
+    <p class="title">SORTE NORTE</p>
+
+    <div>
+        {
+            estaLogado ? (
+                <div class="usuario">
+                    <p>{session.user?.email}</p>
+
+                    <SignOut>Sair</SignOut>
+                </div>
+            ) : (
+                <div class="usuario">
+                    <SignIn provider="github">Entrar</SignIn>
+                </div>
+            )
+        }
+    </div>
+</div>
+
+<style>
+    .title {
+        margin-left: 20px;
+        font-size: 28px;
+        font-weight: 900;
+    }
+
+    .navbar {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+
+        height: 60px;
+        padding: 5px;
+
+        box-shadow: -2px 0px 10px 0px rgba(0,0,0,0.75);
+    }
+
+    .usuario {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+
+        min-width: 80px;
+        margin-right: 20px;
+    }
+
+    .usuario p {
+        margin: 0;
+        padding: 0;
+    }
+</style>
