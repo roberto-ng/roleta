@@ -47,6 +47,12 @@ const sorteios = await prisma.sorteio.findMany({
                 </div>
             );
         })}
+        
+        {(sorteios.length === 0) && (
+            <div>
+                <p>Esse usuário ainda não realizou nenhum sorteio</p>
+            </div>
+        )}
     </div>
 </Layout>
 
