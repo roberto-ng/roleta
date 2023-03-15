@@ -3,8 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { getSession } from "auth-astro";
 import { DateTime } from 'luxon';
 import { z } from "zod";
-import { gerarNumerosAleatorios } from "../../../lib/utils";
-import { SorteioNumeroSchema } from "../../../prisma/zod";
+import { gerarNumerosAleatorios } from "../../lib/sorteio";
 import Layout from "../../layouts/Layout.astro";
 import { authOpts } from "../api/auth/[...astroauth]";
 
