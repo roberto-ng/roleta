@@ -31,7 +31,11 @@ if (Astro.request.method === "POST") {
         // gerar resultados
         const quantidade = data.quantidade ?? 1;
         const resultados = gerarNumerosAleatorios(min, max, quantidade);
-        const resultadoString = resultados.join(' ');
+        const resultadoString = resultados?.join(' ');
+
+        if (resultados == null) {
+            throw new Error('Sorteio inválido');
+        }
 
         // salvar sorteio
         const prisma = new PrismaClient();

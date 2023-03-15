@@ -10,12 +10,12 @@ export const gerarNumerosAleatorios = trampoline((
     max: number, 
     quantidade: number, 
     resultados = Set<number>(),
-): Result<Numeros> => {
+): Result<Numeros | null> => {
     // número de valores possíveis
     const possibilidades = max + 1 - min; 
     if (quantidade > possibilidades) {
         // não há números o suficiente, retornar um set vazio
-        return Set();
+        return null;
     }
 
     // gerar número aleatório
