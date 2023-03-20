@@ -1,0 +1,130 @@
+---
+import { PrismaClient } from "@prisma/client";
+import { getSession } from "auth-astro";
+import { DateTime } from 'luxon';
+import { z } from "zod";
+import { gerarNumerosAleatorios, sortearNomes } from "../../lib/sorteio";
+import Layout from "../../layouts/Layout.astro";
+import { authOpts } from "../api/auth/[...astroauth]";
+import { OrderedSet, Set } from "immutable";
+
+const session = await getSession(Astro.request, authOpts);
+
+const schema = z.object({
+    nomes: z.string(),
+    quantidade: z.coerce.number().min(1).max(10),
+});
+
+if (session?.user == null) {
+    return Astro.redirect("/login");
+}
+
+if (Astro.request.method === "POST") {
+    try {
+        const formData = await Astro.request.formData();
+        const data = schema.parse(Object.fromEntries(formData));
+
+        const nomes = OrderedSet(
+            data.nomes
+                .replaceAll(',', '\n')
+                .split('\n')
+        );
+
+        // gerar resultados
+        const resultados = sortearNomes(nomes.toArray(), data.quantidade);
+        const resultadoString = resultados?.join('\n');
+
+        if (resultados == null) {
+            throw new Error('Sorteio inválido');
+        }
+
+        // salvar sorteio
+        const prisma = new PrismaClient();
+        const { id } = await prisma.sorteio.create({
+            data: {
+                tipo: 'nome',
+                userEmail: session.user.email!,
+                nomes: nomes.join('\n'),
+                resultado: resultadoString,
+                data: DateTime.now().toISO(),
+            },
+        });
+
+        return Astro.redirect(`/sorteios/${id}`);
+    } catch (err) {
+        console.error(err);
+    }
+}
+---
+
+<Layout pageTitle="Novo sorteio" session={session}>
+    <div>
+        <form action="/sorteios/novo_nomes" method="post">
+            <input type="hidden" name="tipo" value="nome" />
+
+            <p>
+                Informe no campo abaixo uma lista com os itens (nomes, números, apelidos e etc) 
+                a serem sorteados separados por quebra de linha ou vírgula para que possamos 
+                sortear um nome:
+            </p>
+
+            <textarea
+                name="nomes"
+                required
+            />
+
+            <div class="linha">
+                <label>Sortear</label>
+                <input
+                    class="input-numero"
+                    name="quantidade"
+                    type="number"
+                    value="1"
+                    min="1"
+                    max="10"
+                    required
+                />
+                <label>nome(s)</label>
+            </div>
+
+            <button class="button"> Sortear</button>
+        </form>
+    </div>
+</Layout>
+
+<style>
+    .input-numero {
+        max-width: 60px;
+        padding: 10px;
+        font-size: 20px;
+    }
+
+    form label {
+        font-size: 20px;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .linha {
+        display: flex;
+        flex-direction: row;
+        gap: 5px;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .button {
+        border: none;
+        background-color: black;
+        color: white;
+        border-radius: 20px;
+        padding: 10px 20px;
+        margin-top: 20px;
+        font-size: 17px;
+        cursor: pointer;
+    }
+</style>

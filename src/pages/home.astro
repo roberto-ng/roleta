@@ -3,8 +3,28 @@ import { getSession } from "auth-astro";
 import Layout from "../layouts/Layout.astro";
 import { authOpts } from "./api/auth/[...astroauth]";
 import TiposDeSorteio from "../components/TiposDeSorteio.astro";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Sorteio } from "@prisma/client";
 import { DateTime } from "luxon";
+
+function getResultados(sorteio?: Sorteio) {
+    if (sorteio?.tipo === 'nome') {
+        return sorteio.resultado?.split('\n');
+    } else if (sorteio?.tipo === 'numero') {
+        return sorteio.resultado?.split(' ');
+    } else {
+        return undefined;
+    }
+}
+
+function getTipo(sorteio?: Sorteio) {
+    if (sorteio?.tipo === 'nome') {
+        return 'Nome(s)';
+    } else if (sorteio?.tipo === 'numero') {
+        return 'Número(s)';
+    } else {
+        return 'Valor(es)';
+    }
+}
 
 const session = await getSession(Astro.request, authOpts);
 if (session?.user?.email == null) {
@@ -29,16 +49,14 @@ const sorteios = await prisma.sorteio.findMany({
                 .setLocale('pt-br')
                 .toLocaleString(DateTime.DATETIME_SHORT);
 
-            const resultados = sorteio.resultado
-                ?.split(' ')
-                .join(', ');
+            const resultados = getResultados(sorteio)?.join(', ');
 
             return (
                 <div class="sorteio">
                     <h3>Sorteio de número em {data}</h3>
     
                     <p>
-                        Número(s) sorteados: {resultados ?? 'nenhum'}
+                        {getTipo(sorteio)} sorteados: {resultados ?? 'nenhum'}
                     </p>
     
                     <a href={`/sorteios/${sorteio.id}`}>
